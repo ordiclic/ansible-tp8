@@ -1,0 +1,31 @@
+---
+- name: "Add the remi repository"
+  hosts: prod
+  become: yes
+  roles:
+    - role: geerlingguy.repo-remi
+
+- name: "Install Apache"
+  hosts: prod
+  become: yes
+  roles:
+    - role: geerlingguy.apache
+
+- name: "Install PHP and the required packages"
+  hosts: prod
+  become: yes
+  roles:
+    - role: geerlingguy.php
+      vars:
+        php_enablerepo: "remi-php74"
+        php_packages:
+          - php
+          - php-pecl-apcu
+          - php-bz2
+          - php-mysql
+          - php-curl
+          - php-gd
+          - php-intl
+          - php-common
+          - php-mbstring
+          - php-xml

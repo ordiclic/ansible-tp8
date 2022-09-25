@@ -1,0 +1,45 @@
+---
+#- name: "Retrieve the latest wordpress tar file"
+#  get_url:
+#    url: http://WordPress.org/latest.tar.gz
+#    dest: latest.tar.gz
+
+
+
+- name: "Download and install the latest WordPress tarball"
+  hosts: prod
+  become: yes
+  tasks:
+    - name: "Clear previous Wordpress files"
+      shell: rm -rf /var/www/html/*
+
+    - name: "Download and extract the latest tarball"
+      unarchive:
+        remote_src: yes
+        src: "http://wordpress.org/latest.tar.gz"
+        dest: /var/www/html/
+        owner: apache
+        group: apache
+
+    - name: "Move Wordpress files to the correct location and remove previous files"
+      shell: mv /var/www/html/wordpress/* /var/www/html/
+
+    - name: "Configure firewalld to allow HTTP connections"
+      firewalld:
+        service: http
+        permanent: yes
+        state: enabled
+
+    - name: "Gather new salt from Wordpress API"
+      command: curl -s 'https://api.wordpress.org/secret-key/1.1/salt/'
+      register: salts
+
+    - name: "Write the new wp_config.php file"
+      template:
+        src: "wp-config.php.j2"
+        dest: /var/www/html/wp-config.php
+        owner: apache
+        group: apache
+
+  vars_files:
+    - ../vars/vars.yml

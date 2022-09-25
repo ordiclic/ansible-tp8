@@ -1,0 +1,9 @@
+---
+- name: "PHP and Apache install and setup"
+  import_playbook: php.yml
+
+- name: "MySQL install and setup"
+  import_playbook: mysql.yml
+
+- name: "Wordpress install and setup"
+  import_playbook: wordpress.yml

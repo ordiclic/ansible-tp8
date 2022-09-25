@@ -1,0 +1,17 @@
+---
+- name: "Install and configure MariaDB"
+  hosts: prod
+  become: yes
+  roles:
+    - role: bertvv.mariadb
+      vars:
+        mariadb_root_password: "{{ root_password }}"
+        mariadb_databases:
+          - name: "{{ db_name }}"
+        mariadb_users:
+          - name: "{{ db_user }}"
+            password: "{{ db_password }}"
+            priv: "{{ db_name }}.*:ALL"
+            append_privs: yes
+  vars_files:
+    - ../vars/vars.yml

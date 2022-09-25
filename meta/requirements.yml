@@ -1,0 +1,4 @@
+- name: bertvv.mariadb
+- name: geerlingguy.apache
+- name: geerlingguy.php
+- name: geerlingguy.repo-remi
